@@ -67,7 +67,7 @@
 						</span>
 					</div><div class="flex flex-col px-4">
 						<span class="text-gray-600">Groupe</span>
-						<span class="text-xl text-gray-800 font-semibold">John Doe</span>
+						<span class="text-xl text-gray-800 font-semibold">3PL</span>
 					</div>
 				</div>
 				<div class="flex items-center justify-center py-4 lg:w-48">
@@ -83,15 +83,27 @@
 						</span>
 					</div><div class="flex flex-col px-4">
 						<span class="text-gray-600">Nombre</span>
-						<span class="text-xl text-gray-800 font-semibold">John Doe</span>
+						<span class="text-xl text-gray-800 font-semibold">KL</span>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="bg-white lg:rounded-md shadow-sm mt-8">
-			<h2 class="text-xl font-semibold text-gray-u800 px-8 pt-6 pb-6">
-				Factures du client
-			</h2>
+			<div class="flex justify-between px-8 pt-6 pb-6 items-center">
+				<h2 class="text-xl font-semibold text-gray-u800">
+					Factures du client
+				</h2>
+				<button class="px-3 py-2 bg-indigo-700 rounded inline-flex
+					text-indigo-50">
+					<svg class="w-6 h-6 text-indigo-100" fill="none" stroke="currentColor"
+						viewBox="0 0 24 24"
+						xmlns="http://www.w3.org/2000/svg"><path
+						stroke-linecap="round" stroke-linejoin="round"
+						stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6
+						0H6"></path></svg>
+					Nouvelle facture
+				</button>
+			</div>
 			<div class="flex flex-col">
 				<div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
 					<div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -121,15 +133,15 @@
 										</td>
 										<td class="px-6 py-4 whitespace-nowrap">
 											<div class="text-sm
-												text-gray-500">12/04/1994</div>
+														text-gray-500">12/04/1994</div>
 										</td>
 										<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
 											<a href="#" class="text-indigo-600
-												hover:text-indigo-900
-												font-medium">Visualiser</a>
+													 hover:text-indigo-900
+													 font-medium">Visualiser</a>
 										</td>
 									</tr>
-<tr>
+									<tr>
 										<td class="px-6 py-4 whitespace-nowrap">
 											<div class="flex items-center">
 												<div class="text-sm font-medium text-gray-900">
@@ -139,12 +151,12 @@
 										</td>
 										<td class="px-6 py-4 whitespace-nowrap">
 											<div class="text-sm
-												text-gray-500">12/04/2020</div>
+														text-gray-500">12/04/2020</div>
 										</td>
 										<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
 											<a href="#" class="text-yellow-600
-												hover:text-yellow-900
-												font-medium">Modifier</a>
+													 hover:text-yellow-900
+													 font-medium">Poursuivre création</a>
 										</td>
 									</tr>
 									<!-- More people... -->
