@@ -1,7 +1,7 @@
 <x-app-layout>
 	<x-slot name="header">
 		<h2 class="font-semibold text-xl text-gray-8080 leading-tight">
-			{{ __('Client "John Doe" ') }}
+            Client "{{ $client->CUST_NAME }}"
 		</h2>
 	</x-slot>
 
@@ -29,7 +29,7 @@
 					<div class="flex flex-col px-4">
 						<span class="text-gray-600">Identifiant</span>
 						<span class="text-xl text-gray-800 font-semibold
-							truncate"> 7EBE02EC</span>
+							truncate">{{ Str::limit($client->ROWID, 8, '') }}</span>
 					</div>
 				</div>
 				<div class="flex items-center justify-center py-4 lg:w-48">
@@ -45,7 +45,7 @@
 						</span>
 					</div><div class="flex flex-col px-4">
 						<span class="text-gray-600">Nom</span>
-						<span class="text-xl text-gray-800 font-semibold">John Doe</span>
+						<span class="text-xl text-gray-800 font-semibold">{{ $client->CUST_NAME }}</span>
 					</div>
 				</div>
 				<div class="flex items-center justify-center py-4 lg:w-48">
@@ -67,7 +67,7 @@
 						</span>
 					</div><div class="flex flex-col px-4">
 						<span class="text-gray-600">Groupe</span>
-						<span class="text-xl text-gray-800 font-semibold">3PL</span>
+						<span class="text-xl text-gray-800 font-semibold">{{ $client->CUSTGROUP }}</span>
 					</div>
 				</div>
 				<div class="flex items-center justify-center py-4 lg:w-48">
@@ -83,7 +83,7 @@
 						</span>
 					</div><div class="flex flex-col px-4">
 						<span class="text-gray-600">Nombre</span>
-						<span class="text-xl text-gray-800 font-semibold">KL</span>
+						<span class="text-xl text-gray-800 font-semibold">{{ $client->CUST_NUM }}</span>
 					</div>
 				</div>
 			</div>

@@ -30,33 +30,35 @@
 								</tr>
 							</thead>
 							<tbody class="bg-white divide-y divide-gray-200">
+                            @foreach($customers as $customer)
 								<tr>
 									<td class="px-6 py-4 whitespace-nowrap">
 										<div class="flex items-center">
 											<div class="text-xs text-gray-500">
-												7EBE02EC-5B32-4AAE-A265-234698FC9DB1
+                                                {{ $customer->ROWID }}
 											</div>
 										</div>
 									</td>
 									<td class="px-6 py-4 whitespace-nowrap">
 										<div class="flex items-center">
 											<div class="text-sm font-medium text-gray-900">
-												John Doe
+                                                {{ $customer->CUST_NAME }}
 											</div>
 										</div>
 									</td>
 									<td class="px-6 py-4 whitespace-nowrap">
-										<div class="text-sm text-gray-900">3PL</div>
+										<div class="text-sm text-gray-900">{{ $customer->CUSTGROUP }}</div>
 									</td>
 									<td class="px-6 py-4 whitespace-nowrap">
 										<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-											3PL
+											{{ $customer->CUST_NUM }}
 										</span>
 									</td>
 									<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-										<a href="" class="text-indigo-600 hover:text-indigo-900">Voir Factures</a>
+										<a href="{{ route('clients.show', $customer->ROWID) }}" class="text-indigo-600 hover:text-indigo-900">Voir Factures</a>
 									</td>
 								</tr>
+                                @endforeach
 							</tbody>
 						</table>
 					</div>

@@ -21,10 +21,10 @@ Route::get('/dashboard', function () {
 	return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-Route::get("/clients", [\App\Http\Controllers\CustomerController::class, "index"])->middleware(['auth'])->name("clients.index");
-Route::get("/client/{client}", [\App\Http\Controllers\CustomerController::class, "show"])->middleware(['auth'])->name("clients.show");
+Route::get("/clients", [\App\Http\Controllers\CustomerController::class, "index"])->name("clients.index");
+Route::get("/client/{client}", [\App\Http\Controllers\CustomerController::class, "show"])->name("clients.show");
 
-Route::view("/client", "clients.show")->name("clients.show");
+//Route::view("/client", "clients.show")->name("clients.show");
 
 
 require __DIR__ . '/auth.php';
