@@ -30,7 +30,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $generateTask = new GenerateTasks;
-        $schedule->call($generateTask($schedule))->daily()->at('00:00');
+        $generateTask($schedule)();
+        // $schedule->call($generateTask($schedule))->daily()->at('01:45');
     }
 
     /**

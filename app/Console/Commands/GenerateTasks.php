@@ -12,12 +12,20 @@ class GenerateTasks extends Model
 {
     use HasFactory;
 
-    public function __invoke($schedule) {
-        $results = DB::table('CUSTMSTR')->select('CUST_UDF2', 'CLIENTNAME')->where('CUSTGROUP', '3PL')->distinct()->get();
-        Task::insert($results->map(fn ($item) => array_merge(get_object_vars($item), ["ROWID" => (string) Str::uuid()]))->toArray());
-        $tasks = Task::all();
-        $tasks->each(fn ($task) =>
-        $schedule->call($task->execute)->cron($task->frequency)
-        );
+    public function __invoke($schedule)
+    {
+        return function () use ($schedule) {
+            $results = DB::table('CUSTMSTR')->select('CUST_UDF2', 'CLIENTNAME')->where('CUSTGROUP', '3PL')->distinct()->get();
+            Task::insert($results->map(fn ($item) => array_merge(get_object_vars($item), ["ROWID" => (string)Str::uuid()]))->toArray());
+            $tasks = Task::all();
+            $tasks->each(
+                function ($task) use ($schedule) {
+                    if (Str::of($task->CUST_UDF2)->trim()->isNotEmpty()) {
+                        $schedule->call($task->execute)->cron($task->frequency);
+                    } else {
+                        $task->execute();
+                    }
+                });
+        };
     }
 }

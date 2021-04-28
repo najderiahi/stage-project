@@ -9,4 +9,8 @@ class Snapshot extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    protected $table = "SNAPSHOTS";
+    protected $casts = [
+        'QUANTITY' => 'integer',
+    ];
 }

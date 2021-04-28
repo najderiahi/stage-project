@@ -1,7 +1,7 @@
 <x-app-layout>
 	<x-slot name="header">
-		<h2 class="font-semibold text-xl text-gray-8080 leading-tight">
-            Client "{{ $client->CUST_NAME }}"
+		<h2 class="font-semibold text-xl text-center text-gray-8080 leading-tight">
+            Client <span class="text-indigo-600">{{ $client->CUST_NAME }}</span>
 		</h2>
 	</x-slot>
 
@@ -93,7 +93,7 @@
 				<h2 class="text-xl font-semibold text-gray-u800">
 					Factures du client
 				</h2>
-				<button class="px-3 py-2 bg-indigo-700 rounded inline-flex
+				<a href="{{ route('clients.invoices.show', $client->ROWID) }}" class="px-3 py-2 bg-indigo-700 rounded inline-flex
 					text-indigo-50">
 					<svg class="w-6 h-6 text-indigo-100" fill="none" stroke="currentColor"
 						viewBox="0 0 24 24"
@@ -102,7 +102,7 @@
 						stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6
 						0H6"></path></svg>
 					Nouvelle facture
-				</button>
+				</a>
 			</div>
 			<div class="flex flex-col">
 				<div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

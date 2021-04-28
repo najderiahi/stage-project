@@ -16,12 +16,12 @@ class Task extends Model
     protected $guarded = [];
 
     public function execute() {
-        $results = DB::table('BINLOCAT')->select('PRODMSTR.PRODUCT', 'BINLOCAT.BINLABEL', 'BINLOCAT.CLIENTNAME')
+        $results = DB::table('BINLOCAT')->select('PRODMSTR.PRODUCT', 'BINLOCAT.BINLABEL', 'BINLOCAT.CLIENTNAME', 'BINLOCAT.QUANTITY', 'BINLOCAT.COMMENT_IN')
             ->join('BINMSTR', 'BINMSTR.BINLABEL', '=', 'BINLOCAT.BINLABEL')
             ->join('PRODMSTR', 'PRODMSTR.PROD_UDF2', '=', 'BINMSTR.COMMENT_IN')
             ->where('BINLOCAT.CLIENTNAME', $this->CLIENTNAME)
             ->get();
-        $results = collect($results->map(fn ($item) => array_merge(get_object_vars($item), ["ROWID" => (string) Str::uuid()]))->toArray());
+        $results = collect($results->map(fn ($item) => array_merge(get_object_vars($item), ["ROWID" => (string) Str::uuid(), "QUANTITY" => intVal($item->QUANTITY)]))->toArray());
         $results->each(fn ($chunk) => Snapshot::insert($chunk));
     }
 
