@@ -10,7 +10,11 @@ use Illuminate\Support\Facades\DB;
 class ClientInvoiceController extends Controller
 {
     public function show(Customer $client) {
-        $clientProducts = Snapshot::where('CLIENTNAME', $client->CUST_NAME)->paginate();
-        return view('invoices.show', compact('clientProducts', 'client'));
+        $clientInvoices = DB::table('SNAPSHOTS')->select('DESIGNATION', 'COUNT(EMP) as NBR_EMP', 'DATEPART(week, DATECREATE)')
+            ->where('CLIENTNAME', $client->CLIENTAME)
+            ->groupBy('DESIGNATION', 'DATECREATE')
+            ->get();
+        $clientInvoices = $clientInvoices->groupBy('DESINGATION');
+        return view('invoices.show', compact('clientInvoices', 'client'));
     }
 }

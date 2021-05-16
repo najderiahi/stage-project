@@ -16,12 +16,15 @@ class Task extends Model
     protected $guarded = [];
 
     public function execute() {
-        $results = DB::table('BINLOCAT')->select('PRODMSTR.PRODUCT', 'BINLOCAT.BINLABEL', 'BINLOCAT.CLIENTNAME', 'BINLOCAT.QUANTITY', 'BINLOCAT.COMMENT_IN')
-            ->join('BINMSTR', 'BINMSTR.BINLABEL', '=', 'BINLOCAT.BINLABEL')
-            ->join('PRODMSTR', 'PRODMSTR.PROD_UDF2', '=', 'BINMSTR.COMMENT_IN')
-            ->where('BINLOCAT.CLIENTNAME', $this->CLIENTNAME)
-            ->get();
-        $results = collect($results->map(fn ($item) => array_merge(get_object_vars($item), ["ROWID" => (string) Str::uuid(), "QUANTITY" => intVal($item->QUANTITY)]))->toArray());
+        $results = DB::select("
+            SELECT BINLOCAT.BINLABEL as EMP, BINLOCAT.EXTENDED, BINLOCAT.WAREHOUSE, PRODMSTR.CLIENTNAME, BINMSTR.COMMENT_IN as DESIGNATION, BINMSTR.ZONE, PRODMSTR.SELL_PRICE, BINMSTR.DATECREATE
+            FROM BINMSTR INNER JOIN BINLOCAT ON BINMSTR.BINLABEL = BINLOCAT.BINLABEL INNER JOIN PRODMSTR ON PRODMSTR.EXTENDED = BINLOCAT.EXTENDED
+            WHERE PRODMSTR.CLIENTNAME = :client AND DATEPART(week, BINMSTR.DATECREATE) = DATEPART(week, CURRENT_TIMESTAMP)
+        ", [
+            'client' => $this->CLIENTNAME,
+        ]);
+        $results = collect($results);
+        $results = collect($results->map(fn ($item) => array_merge(get_object_vars($item), ["ID" => (string) Str::uuid()]))->toArray());
         $results->each(fn ($chunk) => Snapshot::insert($chunk));
     }
 
