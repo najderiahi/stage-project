@@ -1,7 +1,7 @@
 <x-app-layout>
 	<x-slot name="header">
 		<h2 class="font-semibold text-xl text-center text-gray-8080 leading-tight">
-            Client <span class="text-indigo-600">{{ $client->CUST_NAME }}</span>
+            Client <span class="text-indigo-600">{{ $client->CLIENTNAME }}</span>
 		</h2>
 	</x-slot>
 
@@ -45,7 +45,7 @@
 						</span>
 					</div><div class="flex flex-col px-4">
 						<span class="text-gray-600">Nom</span>
-						<span class="text-xl text-gray-800 font-semibold">{{ $client->CUST_NAME }}</span>
+						<span class="text-xl text-gray-800 font-semibold">{{ $client->CLIENTNAME }}</span>
 					</div>
 				</div>
 				<div class="flex items-center justify-center py-4 lg:w-48">

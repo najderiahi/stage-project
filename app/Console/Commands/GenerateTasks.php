@@ -15,15 +15,14 @@ class GenerateTasks extends Model
     public function __invoke($schedule)
     {
         return function () use ($schedule) {
-            $results = DB::table('CUSTMSTR')->select('CUST_UDF2', 'CLIENTNAME')->where('CUSTGROUP', '3PL')->distinct()->get();
+            $results = DB::table('CUSTMSTR')->select('CUST_UDF2', 'CLIENTNAME')->where('CUSTGROUP', '3PL')->distinct('CLIENTNAME')->get();
             Task::insert($results->map(fn ($item) => array_merge(get_object_vars($item), ["ROWID" => (string)Str::uuid()]))->toArray());
             $tasks = Task::all();
             $tasks->each(
                 function ($task) use ($schedule) {
+                    $task->executeFirst();
                     if (Str::of($task->CUST_UDF2)->trim()->isNotEmpty()) {
-                        $schedule->call($task->execute)->cron($task->frequency);
-                    } else {
-                        $task->execute();
+                        $schedule->call($task->executeWeekly)->cron($task->frequency);
                     }
                 });
         };

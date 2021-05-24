@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\DB;
 class ClientInvoiceController extends Controller
 {
     public function show(Customer $client) {
-        $clientInvoices = DB::table('SNAPSHOTS')->select('DESIGNATION', 'COUNT(EMP) as NBR_EMP', 'DATEPART(week, DATECREATE)')
-            ->where('CLIENTNAME', $client->CLIENTAME)
-            ->groupBy('DESIGNATION', 'DATECREATE')
-            ->get();
-        $clientInvoices = $clientInvoices->groupBy('DESINGATION');
-        return view('invoices.show', compact('clientInvoices', 'client'));
+        $month = request()->has('month') ? request()->get('month') : now()->month;
+        $year = request()->has('year') ? request()->get('year') : now()->year;
+        $clientInvoices = collect(DB::select("SELECT DESIGNATION, COUNT(EMP) AS NBR_EMP, SEMAINE FROM (SELECT DESIGNATION, EMP, CLIENTNAME, ((DATEPART(WEEK, DATECREATE) - DATEPART(WEEK, DATEADD(day, 1, EOMONTH(DATECREATE, -1)))) + 1) AS SEMAINE FROM SNAPSHOTS WHERE DATEPART(month, DATECREATE) = ? AND DATEPART(year, DATECREATE) = ?) DUMMYTABLE WHERE CLIENTNAME = ? GROUP BY DESIGNATION, SEMAINE", [
+            $month, $year, $client->CLIENTNAME,
+        ]))->groupBy('DESIGNATION');
+        return view('invoices.show', compact('clientInvoices', 'client', 'month', 'year'));
     }
 }

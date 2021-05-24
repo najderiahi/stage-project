@@ -15,7 +15,7 @@ class Task extends Model
 
     protected $guarded = [];
 
-    public function execute() {
+    public function executeWeekly() {
         $results = DB::select("
             SELECT BINLOCAT.BINLABEL as EMP, BINLOCAT.EXTENDED, BINLOCAT.WAREHOUSE, PRODMSTR.CLIENTNAME, BINMSTR.COMMENT_IN as DESIGNATION, BINMSTR.ZONE, PRODMSTR.SELL_PRICE, BINMSTR.DATECREATE
             FROM BINMSTR INNER JOIN BINLOCAT ON BINMSTR.BINLABEL = BINLOCAT.BINLABEL INNER JOIN PRODMSTR ON PRODMSTR.EXTENDED = BINLOCAT.EXTENDED
@@ -24,7 +24,19 @@ class Task extends Model
             'client' => $this->CLIENTNAME,
         ]);
         $results = collect($results);
-        $results = collect($results->map(fn ($item) => array_merge(get_object_vars($item), ["ID" => (string) Str::uuid()]))->toArray());
+        $results = collect($results->map (fn ($item) => array_merge(get_object_vars($item), ["ID" => (string) Str::uuid()]))->toArray());
+        $results->each(fn ($chunk) => Snapshot::insert($chunk));
+    }
+
+    public function executeFirst() {
+        $results = DB::select("
+            SELECT BINLOCAT.BINLABEL as EMP, BINLOCAT.EXTENDED, BINLOCAT.WAREHOUSE, PRODMSTR.CLIENTNAME, BINMSTR.COMMENT_IN as DESIGNATION, BINMSTR.ZONE, PRODMSTR.SELL_PRICE, BINMSTR.DATECREATE
+            FROM BINMSTR INNER JOIN BINLOCAT ON BINMSTR.BINLABEL = BINLOCAT.BINLABEL INNER JOIN PRODMSTR ON PRODMSTR.EXTENDED = BINLOCAT.EXTENDED
+            WHERE PRODMSTR.CLIENTNAME = :client", [
+            'client' => $this->CLIENTNAME,
+        ]);
+        $results = collect($results);
+        $results = collect($results->map (fn ($item) => array_merge(get_object_vars($item), ["ID" => (string) Str::uuid()]))->toArray());
         $results->each(fn ($chunk) => Snapshot::insert($chunk));
     }
 
