@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-8080 text-center leading-tight">
-            Creation de facture <span class="text-indigo-600">{{ $client->CLIENTNAME }}</span>
+        <h2 class="font-semibold text-xl text-gray-800  leading-tight">
+            Creation de facture <span class="text-blue-600">{{ $client->CLIENTNAME }}</span>
         </h2>
     </x-slot>
     <div class="py-12 max-w-7xl mx-auto lg:px-8 md:px-6 grid grid-cols-1 gap-5">
@@ -22,9 +22,9 @@
                         @endfor
                 </select>
             </div>
-            <button type="submit" class="px-3 py-2 text-xs font-semibold tracking-wide uppercase rounded-md bg-gray-800 focus:ring focus:ring-gray-300 focus:ring-opacity-50 focus:outline-none text-white">Generer facture</button>
+            <button type="submit" class="px-3 py-2 text-xs font-semibold tracking-wide uppercase rounded-md bg-blue-700 focus:ring focus:ring-blue-300 focus:ring-opacity-50 focus:outline-none text-white">Generer facture</button>
         </form>
-        @foreach($clientInvoices as $designation => $clientInvoice)
+        @forelse($clientInvoices as $designation => $clientInvoice)
         <div class="flex flex-col">
             <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -98,6 +98,176 @@
                 </div>
             </div>
         </div>
-        @endforeach
+        @empty
+        <div class="flex flex-col items-center justify-center my-20 space-y-4">
+                <div class="w-1/3  bg-gray-100 p-2 rounded-t-full">
+                    <img src="{{ asset('assets/images/empty.svg') }}" alt="">
+                </div>
+                <span class="text-gray-700">Pas d'elements disponibles pour cette date.</span>
+        </div>
+        @endforelse
+
+        <h2 class="text-xl font-semibold mb-2 mt-4">Entrees - Sorties</h2>
+        <div class="flex flex-col">
+            <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                    <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                                    Designation
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                                    Mouvements
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                                    Quantites
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                                    Prix Unitaire
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                                    Prix Total
+                                </th>
+
+                            </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap border-r" rowspan='2'>
+
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="text-xs text-gray-700">
+                                                Entrees
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="text-xs text-gray-700">
+                                                {{ $inputs->count }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="text-xs text-gray-700">
+                                                <input type="number" class="px-2 py-1 border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50 focus:border-gray-400 shadow-none transition" />
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="text-xs text-gray-700">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="text-xs text-gray-700">
+                                                Sorties
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="text-xs text-gray-700">
+                                                {{ $outputs->count }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="text-xs text-gray-700">
+                                                <input type="number" class="px-2 py-1 border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50 focus:border-gray-400 shadow-none transition" />
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="text-xs text-gray-700">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap border-r">
+                                        <div class="flex items-center">
+                                            <div class="text-xs text-gray-700">
+                                                Prix total
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td colspan="4"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="text-xl font-semibold mb-2 mt-4">Facturations</h2>
+        <div class="flex flex-col">
+            <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                    <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                                    Rubrique de facturation
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                                    Prix Unitaire
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                               @foreach($facturations as $facturation)
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" name="" id="">
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="text-xs text-gray-700">
+                                                {{ $facturation->DESCRIPT }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="text-xs text-gray-700">
+                                                {{ $facturation->SELL_PRICE }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap border-r">
+                                        <div class="flex items-center">
+                                            <div class="text-xs text-gray-700">
+                                                Prix total
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td colspan="4"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </x-app-layout>

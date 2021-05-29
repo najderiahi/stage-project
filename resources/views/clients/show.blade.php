@@ -1,39 +1,16 @@
 <x-app-layout>
 	<x-slot name="header">
-		<h2 class="font-semibold text-xl text-center text-gray-8080 leading-tight">
-            Client <span class="text-indigo-600">{{ $client->CLIENTNAME }}</span>
+		<h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Client <span class="text-blue-600">{{ $client->CLIENTNAME }}</span>
 		</h2>
 	</x-slot>
 
 	<div class="py-12 max-w-7xl mx-auto">
-		<div class="bg-white lg:rounded-md shadow-sm">
-			<div class="grid md:grid-cols-4 mt-8 px-8 py-8 md:divide-x divide-y
+		<div class="bg-white lg:rounded-md shadow">
+			<div class="grid md:grid-cols-3 mt-8 px-8 py-8 md:divide-x divide-y
 				md:divide-y-0">
-				<div class="flex items-center justify-center py-4 lg:w-48">
-					<div class="bg-indigo-500 p-2 rounded-md">
-						<span class="text-white">
-							<svg class="w-6 h-6" fill="none"
-								stroke="currentColor" viewBox="0 0 24 24"
-								xmlns="http://www.w3.org/2000/svg"><path
-								stroke-linecap="round" stroke-linejoin="round"
-								stroke-width="2" d="M12 11c0 3.517-1.009
-								6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916
-								13.916 0 008 11a4 4 0 118 0c0 1.017-.07
-								2.019-.203 3m-2.118 6.844A21.88 21.88 0
-								0015.171 17m3.839
-								1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008
-								4.07M3 15.364c.64-1.319 1-2.8 1-4.364
-								0-1.457.39-2.823 1.07-4"></path></svg>
-						</span>
-					</div>
-					<div class="flex flex-col px-4">
-						<span class="text-gray-600">Identifiant</span>
-						<span class="text-xl text-gray-800 font-semibold
-							truncate">{{ Str::limit($client->ROWID, 8, '') }}</span>
-					</div>
-				</div>
-				<div class="flex items-center justify-center py-4 lg:w-48">
-					<div class="bg-indigo-500 p-2 rounded-md">
+				<div class="flex items-center justify-center py-4">
+					<div class="bg-blue-500 p-2 rounded-md">
 						<span class="text-white">
 							<svg class="w-6 h-6" fill="none"
 								stroke="currentColor" viewBox="0 0 24 24"
@@ -44,12 +21,12 @@
 								00-7-7z"></path></svg>
 						</span>
 					</div><div class="flex flex-col px-4">
-						<span class="text-gray-600">Nom</span>
+						<span class="text-gray-600">Nom du client</span>
 						<span class="text-xl text-gray-800 font-semibold">{{ $client->CLIENTNAME }}</span>
 					</div>
 				</div>
-				<div class="flex items-center justify-center py-4 lg:w-48">
-					<div class="bg-indigo-500 p-2 rounded-md">
+				<div class="flex items-center justify-center py-4">
+					<div class="bg-blue-500 p-2 rounded-md">
 						<span class="text-white">
 							<svg class="w-6 h-6" fill="none"
 								stroke="currentColor" viewBox="0 0 24 24"
@@ -70,8 +47,8 @@
 						<span class="text-xl text-gray-800 font-semibold">{{ $client->CUSTGROUP }}</span>
 					</div>
 				</div>
-				<div class="flex items-center justify-center py-4 lg:w-48">
-					<div class="bg-indigo-500 p-2 rounded-md">
+				<div class="flex items-center justify-center py-4">
+					<div class="bg-blue-500 p-2 rounded-md">
 						<span class="text-white">
 							<svg class="w-6 h-6" fill="none"
 								stroke="currentColor" viewBox="0 0 24 24"
@@ -82,8 +59,8 @@
 								2v12a2 2 0 002 2z"></path></svg>
 						</span>
 					</div><div class="flex flex-col px-4">
-						<span class="text-gray-600">Nombre</span>
-						<span class="text-xl text-gray-800 font-semibold">{{ $client->CUST_NUM }}</span>
+						<span class="text-gray-600">Nom de consomateur</span>
+						<span class="text-xl text-gray-800 font-semibold">{{ $client->CUST_NAME }}</span>
 					</div>
 				</div>
 			</div>
@@ -93,9 +70,9 @@
 				<h2 class="text-xl font-semibold text-gray-u800">
 					Factures du client
 				</h2>
-				<a href="{{ route('clients.invoices.show', $client->ROWID) }}" class="px-3 py-2 bg-indigo-700 rounded inline-flex
-					text-indigo-50">
-					<svg class="w-6 h-6 text-indigo-100" fill="none" stroke="currentColor"
+				<a href="{{ route('clients.invoices.show', $client->ROWID) }}" class="px-3 py-2 bg-blue-700 rounded inline-flex
+					text-blue-50">
+					<svg class="w-6 h-6 text-blue-100" fill="none" stroke="currentColor"
 						viewBox="0 0 24 24"
 						xmlns="http://www.w3.org/2000/svg"><path
 						stroke-linecap="round" stroke-linejoin="round"
@@ -117,6 +94,9 @@
 										<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 											Date de delivrance
 										</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+											Statut
+										</th>
 										<th scope="col" class="relative px-6 py-3">
 											<span class="sr-only">Actions</span>
 										</th>
@@ -135,9 +115,15 @@
 											<div class="text-sm
 														text-gray-500">12/04/1994</div>
 										</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="inline-flex items-center px-3 text-sm py-1 bg-green-100 rounded-full">
+                                                <span class="inline-block w-1 h-1 rounded-full mr-2 bg-green-700"></span>
+                                               <span class="text-green-700">Terminée</span>
+                                            </div>
+										</td>
 										<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-											<a href="#" class="text-indigo-600
-													 hover:text-indigo-900
+											<a href="#" class="text-blue-600
+													 hover:text-blue-900
 													 font-medium">Visualiser</a>
 										</td>
 									</tr>
@@ -152,6 +138,12 @@
 										<td class="px-6 py-4 whitespace-nowrap">
 											<div class="text-sm
 														text-gray-500">12/04/2020</div>
+										</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+											<div class="inline-flex items-center px-3 text-sm py-1 bg-yellow-100 rounded-full">
+                                                <span class="inline-block w-1 h-1 rounded-full mr-2 bg-yellow-700"></span>
+                                               <span class="text-yellow-700">En cours</span>
+                                            </div>
 										</td>
 										<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
 											<a href="#" class="text-yellow-600
