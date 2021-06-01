@@ -8,7 +8,7 @@
         <form action="" class="flex items-end space-x-5">
             <div class="flex flex-col max-w-xs flex-shrink-0 w-full">
                 <label for="" class="text-gray-700 text-sm mb-1">Mois de l'annee</label>
-                <select name="month" id="" class="w-full px-2 py-1 rounded-md shadow-none border border-gray-300">
+                <select name="month" class="w-full px-2 py-1 rounded-md shadow-none border border-gray-300">
                     @for ($i = 1; $i <= 12; $i++)
                         <option value="{{ $i }}" @if($month == $i) selected @endif>{{ \Illuminate\Support\Carbon::createFromDate(2021, $i, 1)->format('F') }}</option>
                     @endfor
@@ -16,7 +16,7 @@
             </div>
             <div class="flex flex-col max-w-xs flex-shrink-0 w-full">
                 <label for="" class="text-gray-700 text-sm mb-1">Annee</label>
-                <select name="year" id="" class="w-full px-2 py-1 rounded-md shadow-none border border-gray-300">
+                <select name="year" class="w-full px-2 py-1 rounded-md shadow-none border border-gray-300">
                         @for ($i = 2012; $i <= now()->year; $i++)
                             <option value="{{ $i }}" @if($year == $i) selected @endif>{{ $i }}</option>
                         @endfor
@@ -47,8 +47,19 @@
 
                             </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach($clientInvoice as $weekInvoice)
+                            <tbody x-data='{
+                                price: [],
+                                nbrEmp: @json($clientInvoice->map(fn ($value) => $value->NBR_EMP)),
+                                calculatePriceTotal () {
+                                    let total = 0;
+                                    for(let i =0; i < this.nbrEmp.length; i++) {
+                                        if(this.nbrEmp[i] === undefined || this.price[i] === undefined) return ""
+                                        total += (parseFloat(this.nbrEmp[i]) * parseFloat(this.price[i]));
+                                    }
+                                    return isNaN(total) ? "" : total;
+                                }
+                            }' class="bg-white divide-y divide-gray-200">
+                                @foreach($clientInvoice as $index => $weekInvoice)
                                 <tr>
                                     @if($loop->first)
                                     <td class="px-6 py-4 whitespace-nowrap border-r" rowspan='{{ $clientInvoice->count() }}'>
@@ -76,7 +87,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="text-xs text-gray-700">
-                                                <input type="number" class="px-2 py-1 border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50 focus:border-gray-400 shadow-none transition" />
+                                                <input x-model="price[{{$index}}]" type="number" class="px-2 py-1 border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50 focus:border-gray-400 shadow-none transition" />
                                             </div>
                                         </div>
                                     </td>
@@ -90,7 +101,12 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td colspan="4"></td>
+                                    <td colspan="2"></td>
+                                    <td>
+                                        <div class="flex items-center px-6">
+                                            <div class="text-xs text-gray-700 text-xl font-semibold" x-text="calculatePriceTotal()"></div>
+                                        </div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -107,6 +123,7 @@
         </div>
         @endforelse
 
+        @if($outputs->count != 0 || $inputs->count != 0)
         <h2 class="text-xl font-semibold mb-2 mt-4">Entrees - Sorties</h2>
         <div class="flex flex-col">
             <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -133,7 +150,24 @@
 
                             </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tbody class="bg-white divide-y divide-gray-200" x-data="{
+                                inputPrice: null,
+                                inputQty: {{ $inputs->count}},
+                                outputPrice: null,
+                                outputQty: {{$outputs->count}},
+                                calculateInputTotal () {
+                                    let total = parseFloat(this.inputQty) * parseFloat(this.inputPrice);
+                                    return isNaN(total) ? '': total;
+                                },
+                                calculateOutputTotal () {
+                                    let total = parseFloat(this.outputQty) * parseFloat(this.outputPrice);
+                                    return isNaN(total) ? '' : total;
+                                },
+                                priceTotal () {
+                                    let total = this.calculateInputTotal() + this.calculateOutputTotal();
+                                    return isNaN(total) ? '' : total;
+                                }
+                             }">
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap border-r" rowspan='2'>
 
@@ -155,13 +189,13 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="text-xs text-gray-700">
-                                                <input type="number" class="px-2 py-1 border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50 focus:border-gray-400 shadow-none transition" />
+                                                <input x-model="inputPrice" type="number" class="px-2 py-1 border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50 focus:border-gray-400 shadow-none transition" />
                                             </div>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
-                                            <div class="text-xs text-gray-700">
+                                            <div class="text-xs text-gray-700" x-text="calculateInputTotal()">
                                             </div>
                                         </div>
                                     </td>
@@ -184,13 +218,13 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="text-xs text-gray-700">
-                                                <input type="number" class="px-2 py-1 border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50 focus:border-gray-400 shadow-none transition" />
+                                                <input x-model="outputPrice" type="number" class="px-2 py-1 border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50 focus:border-gray-400 shadow-none transition" />
                                             </div>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
-                                            <div class="text-xs text-gray-700">
+                                            <div class="text-xs text-gray-700" x-text="calculateOutputTotal()">
                                             </div>
                                         </div>
                                     </td>
@@ -203,7 +237,13 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td colspan="4"></td>
+                                    <td colspan="2"></td>
+                                    <td>
+                                        <div class="flex items-center px-6">
+                                            <div class="text-xs text-gray-700 text-xl font-semibold" x-text="priceTotal()">
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -211,7 +251,9 @@
                 </div>
             </div>
         </div>
+        @endif
 
+        @if($facturations->isNotEmpty())
         <h2 class="text-xl font-semibold mb-2 mt-4">Facturations</h2>
         <div class="flex flex-col">
             <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -269,5 +311,6 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
 </x-app-layout>

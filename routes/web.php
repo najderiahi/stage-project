@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-	return view('dashboard');
+	return redirect()->route('clients.index');
 })->middleware(['auth'])->name('dashboard');
 
 Route::middleware(['auth'])->get("/clients", [\App\Http\Controllers\CustomerController::class, "index"])->name("clients.index");
