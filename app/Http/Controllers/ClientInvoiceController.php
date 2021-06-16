@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Product;
 use App\Models\Snapshot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ClientInvoiceController extends Controller
 {
@@ -24,12 +26,59 @@ class ClientInvoiceController extends Controller
             $month, $year, $client->CLIENTNAME,
             ]),
         )->first();
-        $facturations = collect(DB::select("SELECT ROWID, SELL_PRICE, DESCRIPT FROM PRODMSTR WHERE ITEMTYPE = 'FIN-G' AND CLIENTNAME = ? AND DATEPART(month, DATECREATE) = ? AND DATEPART(year, DATECREATE) = ?", [
+        $facturations = collect(DB::select("SELECT ROWID, SELL_PRICE, DESCRIPT FROM PRODMSTR WHERE ITEMTYPE = 'FIN-G' AND CLIENTNAME = ?", [
             $client->CLIENTNAME,
-            $month,
-            $year,
             ]),
         );
         return view('invoices.show', compact('clientInvoices', 'client', 'month', 'year', 'inputs', 'outputs', 'facturations'));
+    }
+
+    public function store(Request $request, Customer $client) {
+        $request->validate([
+            'total_prices_designation' => 'required|array',
+            'total_prices_designation.*' => 'numeric|min:0',
+            'designations' => 'required|array',
+            'designations.*' => 'string|nullable',
+            'inputs_price' => 'required|numeric|min:0',
+            'outputs_price' => 'required|numeric|min:0',
+        ]);
+
+        $designations = $request->designations;
+        $total_prices_designation = $request->total_prices_designation;
+        $products = collect($designations)->zip(collect($total_prices_designation))
+            ->map(function ($item) use ($client) {
+                $prodName ='FIN' . Str::random(6);
+                $item[] = $prodName;
+                $item[] = 'FIN';
+                $item[] = "$client->CLIENTNAME - Emplacement $item[0]";
+                $item[] = Str::uuid();
+                $item[] = "$prodName / $client->CLIENTNAME";
+                $item[] = now();
+                return $item;
+            });
+        $products = $products->map(fn($item) => collect(['DESIGNATION', 'SELL_PRICE', 'PRODUCT', 'ITEMTYPE', 'DESCRIPT', 'ROWID', 'EXTENDED', 'DATECREATE'])->combine($item));
+        $products->each(fn($item) => $item->forget('DESIGNATION'));
+        $products->each(fn ($item) => Product::create($item->toArray()));
+        $name ='FIN' . Str::random(6);
+        Product::create([
+            'PRODUCT' => $name,
+            'SELL_PRICE' => $request->inputs_price,
+            'ITEMTYPE' => 'FIN',
+            'ROWID' => Str::uuid(),
+            'DESCRIPT' => "$client->CLIENTNAME - ENTREES",
+            'EXTENDED' => "$name / $client->CLIENTNAME",
+            'DATECREATE' => now(),
+        ]);
+        $name ='FIN' . Str::random(6);
+        Product::create([
+            'PRODUCT' => $name,
+            'SELL_PRICE' => $request->outputs_price,
+            'ITEMTYPE' => 'FIN',
+            'ROWID' => Str::uuid(),
+            'DESCRIPT' => "$client->CLIENTNAME - SORTIES",
+            'EXTENDED' => "$name / $client->CLIENTNAME",
+            'DATECREATE' => now(),
+        ]);
+        return redirect()->route('clients.index');
     }
 }
